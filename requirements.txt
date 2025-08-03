@@ -1,0 +1,10 @@
+PyQt5>=5.15
+SQLAlchemy>=1.4
+alembic>=1.7
+transformers>=4.18
+fastapi>=0.76
+uvicorn>=0.17
+requests>=2.27
+python-multipart
+pydantic>=1.8
+faiss-cpu          # if you later upgrade to embedding+vector search
