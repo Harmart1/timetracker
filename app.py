@@ -1,18 +1,23 @@
 import sys
 from PyQt5 import QtWidgets
-from models import init_db, SessionLocal
+from models import init_db, SessionLocal, Config
 from ui import TimerTab, EntriesTab, CodesStaffTab, InvoiceTab
+import logging
 
 def main():
     # Initialize DB & config
     init_db()
     session = SessionLocal()
-    # seed config if empty
-    if not session.query(type(session.query(type(session.query(type(session.query(type(Config)).mapper.class_).filter_by(key="firm_name")).all())))).all()):
-        from models import set_config
-        set_config(session, "firm_name", "Tim Harmar Legal and Consult Solutions")
-        set_config(session, "address",   "67 Hugill St., Sault Ste. Marie, ON P6A 4E6")
-        set_config(session, "emails",    "tharmar@timharmar.com,kburton@timharmar.com")
+    try:
+        # Seed config if empty: use a simple, explicit existence check.
+        if not session.query(Config).filter_by(key="firm_name").first():
+            from models import set_config
+            set_config(session, "firm_name", "Tim Harmar Legal and Consult Solutions")
+            set_config(session, "address",   "67 Hugill St., Sault Ste. Marie, ON P6A 4E6")
+            set_config(session, "emails",    "tharmar@timharmar.com,kburton@timharmar.com")
+    finally:
+        # Ensure the session is closed to avoid leaking DB connections.
+        session.close()
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
